@@ -28,22 +28,17 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException, ServletException {
 
-        log.info("filter에 걸립니다.");
         if(!isAjax(request)) {
             throw new IllegalStateException("Authentication is not supported");
         }
 
         AccountDto accountDto = objectMapper.readValue(request.getReader(), AccountDto.class);
 
-        log.info("accountDto는? : " + accountDto);
-
         if(StringUtils.isEmpty(accountDto.getUsername()) || StringUtils.isEmpty(accountDto.getPassword())) {
             throw new IllegalArgumentException("Username or Password is empty");
         }
 
         AjaxAuthenticationToken ajaxAuthenticationToken = new AjaxAuthenticationToken(accountDto.getUsername(), accountDto.getPassword());
-
-        log.info("ajaxAutehnticationToken은? : " + ajaxAuthenticationToken);
 
         return getAuthenticationManager().authenticate(ajaxAuthenticationToken);
     }
